@@ -164,7 +164,8 @@ func handleGame(id int) {
 		for _, t := range player.Troops {
 			conn.Write([]byte(fmt.Sprintf("- %s (ATK: %d, MANA: %d)\n", t.Name, t.ATK, t.MANA)))
 		}
-		conn.Write([]byte(fmt.Sprintf("Your current MANA: %d\n", player.Mana)))
+		manaBar := strings.Repeat("|", player.Mana) + strings.Repeat(".", 10-player.Mana)
+		conn.Write([]byte(fmt.Sprintf("💧 Mana: [%s] (%d/10)\n", manaBar, player.Mana)))
 
 		text, _ := reader.ReadString('\n')
 		text = strings.TrimSpace(text)
@@ -196,14 +197,16 @@ func handleGame(id int) {
 		}
 
 		// 📍Chọn tower
-		conn.Write([]byte("Choose a tower to attack:\n"))
+		conn.Write([]byte("🛡️  Enemy Towers Status:\n"))
 		for idx, t := range enemy.Towers {
-			status := fmt.Sprintf("(HP: %d)", t.HP)
+			bar := strings.Repeat("█", t.HP/200)
 			if t.HP <= 0 {
-				status = "(DESTROYED ❌)"
+				conn.Write([]byte(fmt.Sprintf("[%d] [X] %s | DESTROYED ❌\n", idx, t.Type)))
+			} else {
+				conn.Write([]byte(fmt.Sprintf("[%d]     %s | HP: %d | %s\n", idx, t.Type, t.HP, bar)))
 			}
-			conn.Write([]byte(fmt.Sprintf("[%d] %s %s\n", idx, t.Type, status)))
 		}
+
 		conn.Write([]byte("Enter tower index (0 = King, 1 = Guard1...):\n"))
 		towerIdxStr, _ := reader.ReadString('\n')
 		towerIdxStr = strings.TrimSpace(towerIdxStr)
