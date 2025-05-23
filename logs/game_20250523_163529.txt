@@ -1,0 +1,17 @@
+🔥 Player 1 used Pawn. Dealt 40 damage to Player 2's Guard Tower 1. HP left: 1060
+🔥 Player 1 used Prince. Dealt 330 damage to Player 2's Guard Tower 1. HP left: 730
+🔥 Player 1 used Pawn. Dealt 88 damage to Player 2's Guard Tower 1. HP left: 715
+🔥 Player 1 used Pawn. Dealt 44 damage to Player 2's Guard Tower 1. HP left: 671
+🔥 Player 1 used Pawn. Dealt 44 damage to Player 2's Guard Tower 1. HP left: 627
+🔥 Player 1 used Queen. Dealt 0 damage to Player 2's Guard Tower 1. HP left: 627
+🔥 Player 1 used Pawn. Dealt 44 damage to Player 2's Guard Tower 1. HP left: 583
+🔥 Player 1 used Queen. Dealt 0 damage to Player 2's Guard Tower 1. HP left: 583
+🔥 Player 2 used Knight. Dealt 230 damage to Player 1's Guard Tower 1. HP left: 770
+🔥 Player 2 used Prince. Dealt 340 damage to Player 1's Guard Tower 1. HP left: 430
+🔥 Player 2 used Pawn. Dealt 130 damage to Player 1's Guard Tower 1. HP left: 300
+🔥 Player 2 used Bishop. Dealt 120 damage to Player 1's Guard Tower 1. HP left: 180
+🔥 Player 2 used Prince. Dealt 330 damage to Player 1's Guard Tower 1. HP left: 0
+🔥 Player 2 used Pawn. Dealt 72 damage to Player 1's Guard Tower 2. HP left: 866
+🔥 Player 2 used Queen. Dealt 0 damage to Player 1's Guard Tower 2. HP left: 866
+🔥 Player 2 used Queen. Dealt 0 damage to Player 1's Guard Tower 2. HP left: 866
+⏰ Time's up!

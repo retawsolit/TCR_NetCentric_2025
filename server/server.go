@@ -19,6 +19,7 @@ import (
 var playerConns [2]net.Conn
 var players [2]data.Player
 var gameOver atomic.Bool
+var logs [2][]string
 
 func main() {
 	ln, err := net.Listen("tcp", ":8080")
@@ -111,12 +112,54 @@ func handleGame(id int) {
 	enemy := &players[1-id]
 	targetConn := playerConns[1-id]
 
+	startTime := time.Now()
+
 	for {
+		// ⏱️ Time up
+		if time.Since(startTime) >= 3*time.Minute {
+			logs[id] = append(logs[id], "⏰ Time's up!")
+
+			playerAlive, enemyAlive := 0, 0
+			for _, t := range player.Towers {
+				if t.HP > 0 {
+					playerAlive++
+				}
+			}
+			for _, t := range enemy.Towers {
+				if t.HP > 0 {
+					enemyAlive++
+				}
+			}
+
+			if playerAlive > enemyAlive {
+				conn.Write([]byte("🏆 You win by having more towers!\n"))
+				targetConn.Write([]byte("❌ You lose. Opponent has more towers.\n"))
+				GainEXP(player, 30)
+			} else if enemyAlive > playerAlive {
+				conn.Write([]byte("❌ You lose. Opponent has more towers.\n"))
+				targetConn.Write([]byte("🏆 You win by having more towers!\n"))
+				GainEXP(enemy, 30)
+			} else {
+				conn.Write([]byte("🤝 Draw! Equal number of towers.\n"))
+				targetConn.Write([]byte("🤝 Draw! Equal number of towers.\n"))
+				GainEXP(player, 10)
+				GainEXP(enemy, 10)
+			}
+
+			// ✅ Gộp và ghi log
+			fullLog := append(logs[0], logs[1]...)
+			utils.WriteLogs(fullLog)
+
+			utils.SavePlayersToJSON([]data.Player{players[0], players[1]})
+			gameOver.Store(true)
+			return
+		}
+
 		if gameOver.Load() {
 			return
 		}
 
-		// 1. Hiển thị lựa chọn troop
+		// ✏️ Chọn troop
 		conn.Write([]byte("🧠 Your turn! Type a troop name to deploy:\n"))
 		for _, t := range player.Troops {
 			conn.Write([]byte(fmt.Sprintf("- %s (ATK: %d, MANA: %d)\n", t.Name, t.ATK, t.MANA)))
@@ -133,7 +176,7 @@ func handleGame(id int) {
 
 		var chosen *data.Troop
 		for i := range player.Troops {
-			if strings.EqualFold(strings.TrimSpace(player.Troops[i].Name), text) {
+			if strings.EqualFold(player.Troops[i].Name, text) {
 				chosen = &player.Troops[i]
 				break
 			}
@@ -142,89 +185,59 @@ func handleGame(id int) {
 			conn.Write([]byte("❌ Invalid troop name.\n"))
 			continue
 		}
-
 		if player.Mana < chosen.MANA {
 			conn.Write([]byte("❌ Not enough mana to deploy this troop.\n"))
 			continue
 		}
 
-		// 2. Hiển thị danh sách tower còn sống hoặc đã bị phá
-		conn.Write([]byte("Choose a tower to attack:\n"))
-		for i, t := range enemy.Towers {
-			status := fmt.Sprintf("HP: %d", t.HP)
-			if t.HP <= 0 {
-				status = "DESTROYED ❌"
-			}
-			conn.Write([]byte(fmt.Sprintf("[%d] %s (%s)\n", i, t.Type, status)))
-		}
-		conn.Write([]byte("Enter tower index (e.g., 0 for King, 1 for Guard1...):\n"))
-
-		input, _ := reader.ReadString('\n')
-		input = strings.TrimSpace(input)
-
-		towerIdx, err := strconv.Atoi(input)
-		if err != nil || towerIdx < 0 || towerIdx >= len(enemy.Towers) {
-			conn.Write([]byte("❌ Invalid tower index.\n"))
-			continue
-		}
-
-		// Chặn chọn tower đã bị phá
-		if enemy.Towers[towerIdx].HP <= 0 {
-			conn.Write([]byte("❌ This tower has already been destroyed.\n"))
-			continue
-		}
-
-		// Chặn đánh tower 2 nếu tower 1 chưa bị phá
-		if towerIdx == 2 && enemy.Towers[1].HP > 0 {
-			conn.Write([]byte("❌ Must destroy Guard Tower 1 before Guard Tower 2.\n"))
-			continue
-		}
-
-		if towerIdx == 0 && (enemy.Towers[1].HP > 0 || enemy.Towers[2].HP > 0) {
-			conn.Write([]byte("❌ Must destroy both Guard Towers before attacking King Tower.\n"))
-			continue
-		}
-
-		// Giao tranh
 		player.Mana -= chosen.MANA
 		if GainEXP(player, chosen.EXP) {
 			conn.Write([]byte(fmt.Sprintf("🎉 Level UP! You are now Level %d\n", player.Level)))
 		}
 
-		tower := &enemy.Towers[towerIdx]
-		damage := utils.AttackTower(chosen, tower, id)
-
-		msg := fmt.Sprintf("🔥 Player %d used %s. Dealt %d damage to Player %d's %s. HP left: %d\n",
-			id+1, chosen.Name, damage, (1-id)+1, tower.Type, tower.HP)
-
-		conn.Write([]byte(msg))
-		targetConn.Write([]byte(msg))
-
-		// Kiểm tra nếu tower bị phá
-		if tower.HP <= 0 {
-			notify := fmt.Sprintf("🎯 Player %d (%s) destroyed %s!\n", id+1, player.Username, tower.Type)
-			playerConns[0].Write([]byte(notify))
-			playerConns[1].Write([]byte(notify))
+		// 📍Chọn tower
+		conn.Write([]byte("Choose a tower to attack:\n"))
+		for idx, t := range enemy.Towers {
+			status := fmt.Sprintf("(HP: %d)", t.HP)
+			if t.HP <= 0 {
+				status = "(DESTROYED ❌)"
+			}
+			conn.Write([]byte(fmt.Sprintf("[%d] %s %s\n", idx, t.Type, status)))
+		}
+		conn.Write([]byte("Enter tower index (0 = King, 1 = Guard1...):\n"))
+		towerIdxStr, _ := reader.ReadString('\n')
+		towerIdxStr = strings.TrimSpace(towerIdxStr)
+		towerIdx, err := strconv.Atoi(towerIdxStr)
+		if err != nil || towerIdx < 0 || towerIdx >= len(enemy.Towers) {
+			conn.Write([]byte("❌ Invalid tower index.\n"))
+			continue
+		}
+		targetTower := &enemy.Towers[towerIdx]
+		if targetTower.HP <= 0 {
+			conn.Write([]byte("❌ This tower has already been destroyed.\n"))
+			continue
 		}
 
-		// Kiểm tra end game khi King Tower bị phá
-		if enemy.Towers[0].HP <= 0 {
-			winMsg := fmt.Sprintf("🎉 Player %d (%s) wins the game!\n", id+1, player.Username)
-			conn.Write([]byte(winMsg))
-			targetConn.Write([]byte(winMsg))
+		// 🚀 Tấn công
+		damage := utils.AttackTower(chosen, targetTower, id)
+		msg := fmt.Sprintf("🔥 Player %d used %s. Dealt %d damage to Player %d's %s. HP left: %d",
+			id+1, chosen.Name, damage, (1-id)+1, targetTower.Type, targetTower.HP)
 
-			if GainEXP(player, tower.EXP) {
-				conn.Write([]byte(fmt.Sprintf("🎉 Level UP! You are now Level %d\n", player.Level)))
-			}
+		conn.Write([]byte(msg + "\n"))
+		targetConn.Write([]byte(msg + "\n"))
+		logs[id] = append(logs[id], msg)
 
-			// Ghi lại trạng thái
-			allPlayers := []data.Player{players[0], players[1]}
-			dataBytes, err := json.MarshalIndent(allPlayers, "", "  ")
-			if err == nil {
-				_ = os.WriteFile("data/players.json", dataBytes, 0644)
-				fmt.Println("✅ Saved players.json with updated EXP and Level.")
-			}
+		// 🎯 Kiểm tra King Tower
+		if strings.Contains(targetTower.Type, "King") && targetTower.HP <= 0 {
+			winMsg := fmt.Sprintf("🎉 Player %d (%s) wins by destroying the King Tower!", id+1, player.Username)
+			conn.Write([]byte(winMsg + "\n"))
+			targetConn.Write([]byte(winMsg + "\n"))
+			logs[id] = append(logs[id], winMsg)
 
+			GainEXP(player, 30)
+			fullLog := append(logs[0], logs[1]...)
+			utils.WriteLogs(fullLog)
+			utils.SavePlayersToJSON([]data.Player{players[0], players[1]})
 			gameOver.Store(true)
 			return
 		}
