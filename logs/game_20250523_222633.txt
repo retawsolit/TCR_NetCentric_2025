@@ -1,0 +1,22 @@
+🔥 Player 1 used Rook. Dealt 322 damage to Player 2's Guard Tower 1. HP left: 1289
+🔥 Player 1 used Prince. Dealt 483 damage to Player 2's Guard Tower 1. HP left: 806
+🔥 Player 1 used Knight. Dealt 644 damage to Player 2's Guard Tower 1. HP left: 162
+🔥 Player 1 used Knight. Dealt 322 damage to Player 2's Guard Tower 1. HP left: 0
+🔥 Player 1 used Bishop. Dealt 161 damage to Player 2's Guard Tower 2. HP left: 1450
+🔥 Player 2 used Pawn. Dealt 96 damage to Player 1's Guard Tower 1. HP left: 1368
+🔥 Player 2 used Prince. Dealt 483 damage to Player 1's Guard Tower 1. HP left: 1022
+🔥 Player 2 used Prince. Dealt 1094 damage to Player 1's Guard Tower 1. HP left: 0
+🔥 Player 2 used Prince. Dealt 547 damage to Player 1's Guard Tower 2. HP left: 1063
+🔥 Player 2 used Prince. Dealt 547 damage to Player 1's Guard Tower 2. HP left: 516
+🔥 Player 2 used Prince. Dealt 1094 damage to Player 1's Guard Tower 2. HP left: 0
+🔥 Player 2 used Prince. Dealt 296 damage to Player 1's King Tower. HP left: 2925
+🔥 Player 2 used Prince. Dealt 296 damage to Player 1's King Tower. HP left: 2629
+🔥 Player 2 used Prince. Dealt 592 damage to Player 1's King Tower. HP left: 2037
+🔥 Player 2 used Prince. Dealt 296 damage to Player 1's King Tower. HP left: 1741
+🔥 Player 2 used Prince. Dealt 374 damage to Player 1's King Tower. HP left: 1367
+🔥 Player 2 used Prince. Dealt 748 damage to Player 1's King Tower. HP left: 619
+🔥 Player 2 used Prince. Dealt 748 damage to Player 1's King Tower. HP left: 0
+🎉 Player 2 (player456) wins by destroying the King Tower!
+📊 Player 2 Total Damage: 7211
+🧍 Pawn used 1 time(s)
+🧍 Prince used 12 time(s)

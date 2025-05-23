@@ -2,30 +2,30 @@
   {
     "Username": "player123",
     "Password": "password123",
-    "EXP": 75,
-    "Level": 5,
+    "EXP": 10,
+    "Level": 1,
     "Towers": [
       {
         "Type": "King Tower",
-        "HP": 2884,
-        "ATK": 733,
-        "DEF": 439,
+        "HP": 2000,
+        "ATK": 500,
+        "DEF": 300,
         "CRIT": 10,
         "EXP": 200
       },
       {
         "Type": "Guard Tower 1",
-        "HP": 0,
-        "ATK": 439,
-        "DEF": 146,
+        "HP": 1000,
+        "ATK": 300,
+        "DEF": 100,
         "CRIT": 5,
         "EXP": 100
       },
       {
         "Type": "Guard Tower 2",
-        "HP": 777,
-        "ATK": 439,
-        "DEF": 146,
+        "HP": 1000,
+        "ATK": 300,
+        "DEF": 100,
         "CRIT": 5,
         "EXP": 100
       }
@@ -33,45 +33,45 @@
     "Troops": [
       {
         "Name": "Pawn",
-        "HP": 74,
-        "ATK": 220,
-        "DEF": 146,
+        "HP": 50,
+        "ATK": 150,
+        "DEF": 100,
         "MANA": 3,
         "EXP": 5,
         "Special": ""
       },
       {
         "Name": "Bishop",
-        "HP": 146,
-        "ATK": 293,
-        "DEF": 220,
+        "HP": 100,
+        "ATK": 200,
+        "DEF": 150,
         "MANA": 4,
         "EXP": 10,
         "Special": ""
       },
       {
         "Name": "Rook",
-        "HP": 366,
-        "ATK": 293,
-        "DEF": 293,
+        "HP": 250,
+        "ATK": 200,
+        "DEF": 200,
         "MANA": 5,
         "EXP": 25,
         "Special": ""
       },
       {
         "Name": "Knight",
-        "HP": 293,
-        "ATK": 439,
-        "DEF": 220,
+        "HP": 200,
+        "ATK": 300,
+        "DEF": 150,
         "MANA": 5,
         "EXP": 25,
         "Special": ""
       },
       {
         "Name": "Prince",
-        "HP": 733,
-        "ATK": 585,
-        "DEF": 439,
+        "HP": 500,
+        "ATK": 400,
+        "DEF": 300,
         "MANA": 6,
         "EXP": 50,
         "Special": ""
@@ -91,30 +91,30 @@
   {
     "Username": "player456",
     "Password": "password456",
-    "EXP": 30,
-    "Level": 6,
+    "EXP": 15,
+    "Level": 1,
     "Towers": [
       {
         "Type": "King Tower",
-        "HP": 3119,
-        "ATK": 806,
-        "DEF": 483,
+        "HP": 2000,
+        "ATK": 500,
+        "DEF": 300,
         "CRIT": 10,
         "EXP": 200
       },
       {
         "Type": "Guard Tower 1",
-        "HP": 1288,
-        "ATK": 483,
-        "DEF": 161,
+        "HP": 1000,
+        "ATK": 300,
+        "DEF": 100,
         "CRIT": 5,
         "EXP": 100
       },
       {
         "Type": "Guard Tower 2",
-        "HP": 564,
-        "ATK": 483,
-        "DEF": 161,
+        "HP": 1000,
+        "ATK": 300,
+        "DEF": 100,
         "CRIT": 5,
         "EXP": 100
       }
@@ -122,45 +122,45 @@
     "Troops": [
       {
         "Name": "Pawn",
-        "HP": 81,
-        "ATK": 242,
-        "DEF": 161,
+        "HP": 50,
+        "ATK": 150,
+        "DEF": 100,
         "MANA": 3,
         "EXP": 5,
         "Special": ""
       },
       {
         "Name": "Bishop",
-        "HP": 161,
-        "ATK": 322,
-        "DEF": 242,
+        "HP": 100,
+        "ATK": 200,
+        "DEF": 150,
         "MANA": 4,
         "EXP": 10,
         "Special": ""
       },
       {
         "Name": "Rook",
-        "HP": 403,
-        "ATK": 322,
-        "DEF": 322,
+        "HP": 250,
+        "ATK": 200,
+        "DEF": 200,
         "MANA": 5,
         "EXP": 25,
         "Special": ""
       },
       {
         "Name": "Knight",
-        "HP": 322,
-        "ATK": 483,
-        "DEF": 242,
+        "HP": 200,
+        "ATK": 300,
+        "DEF": 150,
         "MANA": 5,
         "EXP": 25,
         "Special": ""
       },
       {
         "Name": "Prince",
-        "HP": 806,
-        "ATK": 644,
-        "DEF": 483,
+        "HP": 500,
+        "ATK": 400,
+        "DEF": 300,
         "MANA": 6,
         "EXP": 50,
         "Special": ""
@@ -175,6 +175,6 @@
         "Special": "Heals the friendly tower with lowest HP by 300"
       }
     ],
-    "Mana": 9
+    "Mana": 10
   }
 ]

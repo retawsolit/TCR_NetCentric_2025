@@ -86,10 +86,8 @@ func handleLogin(conn net.Conn, id int, wg *sync.WaitGroup) {
 					finalHP *= 1.1
 				}
 
-				// Nếu tower HP ≤ 0 → reset lại tương ứng level
-				if p.Towers[i].HP <= 0 {
-					p.Towers[i].HP = int(math.Round(finalHP))
-				}
+				// reset lại HP tương ứng level
+				p.Towers[i].HP = int(math.Round(finalHP))
 			}
 
 			players[id] = p
@@ -227,6 +225,11 @@ func handleGame(id int) {
 			continue
 		}
 
+		// 🔒 Check attack order restriction
+		if (targetTower.Type == "Guard Tower 2" || targetTower.Type == "King Tower") && enemy.Towers[1].HP > 0 {
+			conn.Write([]byte("🚫 Cannot attack this tower until Guard Tower 1 is destroyed.\n"))
+			continue
+		}
 		// 🚀 Tấn công
 		damage := utils.AttackTower(chosen, targetTower, id, enemy)
 		troopUsage[chosen.Name]++
