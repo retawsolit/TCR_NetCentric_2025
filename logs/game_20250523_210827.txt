@@ -1,0 +1,31 @@
+🔥 Player 1 used Knight. Dealt 220 damage to Player 2's Guard Tower 1. HP left: 880
+🔥 Player 1 used Bishop. Dealt 110 damage to Player 2's Guard Tower 1. HP left: 770
+🔥 Player 1 used Pawn. Dealt 64 damage to Player 2's Guard Tower 1. HP left: 868
+🔥 Player 1 used Pawn. Dealt 32 damage to Player 2's Guard Tower 1. HP left: 836
+🔥 Player 1 used Pawn. Dealt 32 damage to Player 2's Guard Tower 1. HP left: 804
+🔥 Player 1 used Pawn. Dealt 64 damage to Player 2's Guard Tower 1. HP left: 740
+🔥 Player 1 used Knight. Dealt 230 damage to Player 2's Guard Tower 1. HP left: 510
+🔥 Player 1 used Prince. Dealt 351 damage to Player 2's Guard Tower 1. HP left: 159
+🔥 Player 1 used Prince. Dealt 1404 damage to Player 2's Guard Tower 1. HP left: 0
+🔥 Player 1 used Queen. Dealt 0 damage to Player 2's Guard Tower 2. HP left: 1265
+🔥 Player 1 used Queen. Dealt 0 damage to Player 2's Guard Tower 2. HP left: 1265
+🔥 Player 1 used Bishop. Dealt 266 damage to Player 2's Guard Tower 2. HP left: 999
+🔥 Player 1 used Queen. Dealt 0 damage to Player 2's Guard Tower 2. HP left: 999
+🔥 Player 2 used Rook. Dealt 220 damage to Player 1's Guard Tower 1. HP left: 880
+🔥 Player 2 used Pawn. Dealt 55 damage to Player 1's Guard Tower 1. HP left: 825
+🔥 Player 2 used Queen. Dealt 0 damage to Player 1's Guard Tower 1. HP left: 825
+🔥 Player 2 used Prince. Dealt 374 damage to Player 1's Guard Tower 1. HP left: 451
+🔥 Player 2 used Prince. Dealt 374 damage to Player 1's Guard Tower 1. HP left: 77
+🔥 Player 2 used Prince. Dealt 1496 damage to Player 1's Guard Tower 1. HP left: 0
+🔥 Player 2 used Queen. Dealt 0 damage to Player 1's Guard Tower 2. HP left: 1045
+🔥 Player 2 used Queen. Dealt 0 damage to Player 1's Guard Tower 2. HP left: 1265
+🔥 Player 2 used Bishop. Dealt 266 damage to Player 1's Guard Tower 2. HP left: 999
+🔥 Player 2 used Queen. Dealt 0 damage to Player 1's Guard Tower 2. HP left: 999
+🔥 Player 2 used Queen. Dealt 0 damage to Player 1's Guard Tower 2. HP left: 999
+⏰ Time's up!
+📊 Player 2 Total Damage: 2785
+🧍 Pawn used 1 time(s)
+🧍 Queen used 5 time(s)
+🧍 Prince used 3 time(s)
+🧍 Bishop used 1 time(s)
+🧍 Rook used 1 time(s)

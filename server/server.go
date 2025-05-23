@@ -113,6 +113,8 @@ func handleGame(id int) {
 	targetConn := playerConns[1-id]
 
 	startTime := time.Now()
+	troopUsage := map[string]int{}
+	totalDamage := 0
 
 	for {
 		// ⏱️ Time up
@@ -148,6 +150,10 @@ func handleGame(id int) {
 
 			// ✅ Gộp và ghi log
 			fullLog := append(logs[0], logs[1]...)
+			fullLog = append(fullLog, fmt.Sprintf("📊 Player %d Total Damage: %d", id+1, totalDamage))
+			for troop, count := range troopUsage {
+				fullLog = append(fullLog, fmt.Sprintf("🧍 %s used %d time(s)", troop, count))
+			}
 			utils.WriteLogs(fullLog)
 
 			utils.SavePlayersToJSON([]data.Player{players[0], players[1]})
@@ -223,6 +229,8 @@ func handleGame(id int) {
 
 		// 🚀 Tấn công
 		damage := utils.AttackTower(chosen, targetTower, id, enemy)
+		troopUsage[chosen.Name]++
+		totalDamage += damage
 		msg := fmt.Sprintf("🔥 Player %d used %s. Dealt %d damage to Player %d's %s. HP left: %d",
 			id+1, chosen.Name, damage, (1-id)+1, targetTower.Type, targetTower.HP)
 
@@ -239,6 +247,10 @@ func handleGame(id int) {
 
 			GainEXP(player, 30)
 			fullLog := append(logs[0], logs[1]...)
+			fullLog = append(fullLog, fmt.Sprintf("📊 Player %d Total Damage: %d", id+1, totalDamage))
+			for troop, count := range troopUsage {
+				fullLog = append(fullLog, fmt.Sprintf("🧍 %s used %d time(s)", troop, count))
+			}
 			utils.WriteLogs(fullLog)
 			utils.SavePlayersToJSON([]data.Player{players[0], players[1]})
 			gameOver.Store(true)
