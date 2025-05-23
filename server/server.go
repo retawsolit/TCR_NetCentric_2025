@@ -222,7 +222,7 @@ func handleGame(id int) {
 		}
 
 		// 🚀 Tấn công
-		damage := utils.AttackTower(chosen, targetTower, id)
+		damage := utils.AttackTower(chosen, targetTower, id, enemy)
 		msg := fmt.Sprintf("🔥 Player %d used %s. Dealt %d damage to Player %d's %s. HP left: %d",
 			id+1, chosen.Name, damage, (1-id)+1, targetTower.Type, targetTower.HP)
 

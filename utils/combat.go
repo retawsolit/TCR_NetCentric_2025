@@ -2,34 +2,15 @@ package utils
 
 import (
 	"fmt"
-	"math/rand"
+	"math"
+	"strings"
 	"tcr/data"
-	"time"
 )
 
-func init() {
-	rand.Seed(time.Now().UnixNano())
-}
-
-// CRIT theo phần trăm cho Tower vs Troop
-func CalculateDamage(attackerATK, critChance, defenderDEF int) int {
-	crit := rand.Intn(100) < critChance // true if CRIT
-	actualATK := attackerATK
-	if crit {
-		actualATK = int(float64(attackerATK) * 1.2)
-	}
-	dmg := actualATK - defenderDEF
-	if dmg < 0 {
-		return 0
-	}
-	return dmg
-}
-
-// Đếm lượt đánh để tính CRIT theo lượt
 var attackCount = make(map[string]int)
 
-// Troop đánh vào Tower (CRIT mỗi 3 đòn)
-func AttackTower(troop *data.Troop, tower *data.Tower, playerID int) int {
+// 🧠 Troop attack logic including CRIT, special skills
+func AttackTower(troop *data.Troop, tower *data.Tower, playerID int, enemy *data.Player) int {
 	key := fmt.Sprintf("%d_%s", playerID, tower.Type)
 	attackCount[key]++
 
@@ -38,8 +19,23 @@ func AttackTower(troop *data.Troop, tower *data.Tower, playerID int) int {
 		damage = 0
 	}
 
-	// Every 3rd attack is CRIT (×2 damage)
+	// 🎯 CRIT every 3rd attack
 	if attackCount[key]%3 == 0 {
+		damage *= 2
+	}
+
+	// 🧱 Rook: bypass DEF
+	if troop.Name == "Rook" {
+		damage = troop.ATK
+	}
+
+	// 👑 Prince: CRIT if tower HP < 20% of scaled HP
+	if troop.Name == "Prince" && float64(tower.HP) < 0.2*float64(getTowerMaxHPScaled(tower, enemy.Level)) {
+		damage *= 2
+	}
+
+	// ⚔️ Pawn: damage x2 to King if Guard1 & Guard2 destroyed
+	if troop.Name == "Pawn" && strings.Contains(tower.Type, "King") && isGuardTowerDestroyed(enemy) {
 		damage *= 2
 	}
 
@@ -51,12 +47,22 @@ func AttackTower(troop *data.Troop, tower *data.Tower, playerID int) int {
 	return damage
 }
 
-// Tower phản công troop (có CRIT theo phần trăm)
-func AttackTroop(tower *data.Tower, troop *data.Troop) int {
-	damage := CalculateDamage(tower.ATK, tower.CRIT, troop.DEF)
-	troop.HP -= damage
-	if troop.HP < 0 {
-		troop.HP = 0
+// 📐 Get max HP of tower scaled by level
+func getTowerMaxHPScaled(t *data.Tower, level int) int {
+	base := 1000
+	if t.Type == "King Tower" {
+		base = 2000
 	}
-	return damage
+	return int(float64(base) * math.Pow(1.1, float64(level-1)))
+}
+
+// 🔎 Check if both Guard Towers are destroyed
+func isGuardTowerDestroyed(p *data.Player) bool {
+	count := 0
+	for _, t := range p.Towers {
+		if strings.Contains(t.Type, "Guard") && t.HP <= 0 {
+			count++
+		}
+	}
+	return count >= 2
 }
