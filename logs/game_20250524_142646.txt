@@ -1,0 +1,6 @@
+🔥 Player 2 used Pawn. Dealt 50 damage to Player 1's Guard Tower 1. HP left: 950
+🔥 Player 2 used Knight. Dealt 200 damage to Player 1's Guard Tower 1. HP left: 750
+⏰ Time's up!
+📊 Player 2 Total Damage: 250
+🧍 Pawn used 1 time(s)
+🧍 Knight used 1 time(s)

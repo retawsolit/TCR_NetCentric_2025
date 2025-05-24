@@ -72,11 +72,21 @@ func handleLogin(conn net.Conn, id int, wg *sync.WaitGroup) {
 		return
 	}
 
+	// ✅ Load danh sách tổng troop
+	allTroops, err := data.LoadTroops("data/troops.json")
+	if err != nil {
+		conn.Write([]byte("Error loading troop data\n"))
+		return
+	}
+
 	for _, p := range all {
 		if p.Username == username && p.Password == password {
+			// ✅ Random chọn 3 troop từ danh sách tổng
+			p.Troops = data.PickRandomTroops(allTroops, 3)
+
 			// Tăng lại HP tương ứng level
 			for i := range p.Towers {
-				baseHP := 1000 // hoặc giá trị gốc tùy tower type
+				baseHP := 1000
 				if p.Towers[i].Type == "King Tower" {
 					baseHP = 2000
 				}
@@ -86,7 +96,6 @@ func handleLogin(conn net.Conn, id int, wg *sync.WaitGroup) {
 					finalHP *= 1.1
 				}
 
-				// reset lại HP tương ứng level
 				p.Towers[i].HP = int(math.Round(finalHP))
 			}
 
@@ -200,14 +209,39 @@ func handleGame(id int) {
 			conn.Write([]byte(fmt.Sprintf("🎉 Level UP! You are now Level %d\n", player.Level)))
 		}
 
-		// 📍Chọn tower
+		// 👉 Nếu Queen → heal phe mình
+		if strings.EqualFold(chosen.Name, "Queen") {
+			conn.Write([]byte("💖 Select your tower to heal:\n"))
+			for idx, t := range player.Towers {
+				bar := strings.Repeat("█", t.HP/200)
+				conn.Write([]byte(fmt.Sprintf("[%d] %-14s | HP: %4d | %s\n", idx, t.Type, t.HP, bar)))
+			}
+			conn.Write([]byte("Enter tower index to heal:\n"))
+			towerIdxStr, _ := reader.ReadString('\n')
+			towerIdxStr = strings.TrimSpace(towerIdxStr)
+			towerIdx, err := strconv.Atoi(towerIdxStr)
+			if err != nil || towerIdx < 0 || towerIdx >= len(player.Towers) {
+				conn.Write([]byte("❌ Invalid tower index.\n"))
+				continue
+			}
+			healTarget := &player.Towers[towerIdx]
+			healTarget.HP += 300
+			maxHP := utils.GetTowerMaxHPScaled(healTarget, player.Level)
+			if healTarget.HP > maxHP {
+				healTarget.HP = maxHP
+			}
+			conn.Write([]byte(fmt.Sprintf("💖 Healed %s by 300 HP. New HP: %d\n", healTarget.Type, healTarget.HP)))
+			continue // Skip attack phase
+		}
+
+		// 📍Chọn enemy tower
 		conn.Write([]byte("🛡️  Enemy Towers Status:\n"))
 		for idx, t := range enemy.Towers {
 			bar := strings.Repeat("█", t.HP/200)
 			if t.HP <= 0 {
-				conn.Write([]byte(fmt.Sprintf("[%d] [X] %s | DESTROYED ❌\n", idx, t.Type)))
+				conn.Write([]byte(fmt.Sprintf("[%d] [X] %-14s | DESTROYED ❌\n", idx, t.Type)))
 			} else {
-				conn.Write([]byte(fmt.Sprintf("[%d]     %s | HP: %d | %s\n", idx, t.Type, t.HP, bar)))
+				conn.Write([]byte(fmt.Sprintf("[%d]     %-14s | HP: %4d | %s\n", idx, t.Type, t.HP, bar)))
 			}
 		}
 
@@ -230,6 +264,7 @@ func handleGame(id int) {
 			conn.Write([]byte("🚫 Cannot attack this tower until Guard Tower 1 is destroyed.\n"))
 			continue
 		}
+
 		// 🚀 Tấn công
 		damage := utils.AttackTower(chosen, targetTower, id, enemy)
 		troopUsage[chosen.Name]++
@@ -293,6 +328,7 @@ func BuffPlayerStats(p *data.Player) {
 func startManaRegen(player *data.Player) {
 	ticker := time.NewTicker(1 * time.Second)
 	go func() {
+		defer ticker.Stop() // ✅ Dừng ticker khi goroutine kết thúc
 		for range ticker.C {
 			if gameOver.Load() {
 				return

@@ -30,13 +30,33 @@ func AttackTower(troop *data.Troop, tower *data.Tower, playerID int, enemy *data
 	}
 
 	// 👑 Prince: CRIT if tower HP < 20% of scaled HP
-	if troop.Name == "Prince" && float64(tower.HP) < 0.2*float64(getTowerMaxHPScaled(tower, enemy.Level)) {
+	if troop.Name == "Prince" && float64(tower.HP) < 0.2*float64(GetTowerMaxHPScaled(tower, enemy.Level)) {
 		damage *= 2
 	}
 
 	// ⚔️ Pawn: damage x2 to King if Guard1 & Guard2 destroyed
 	if troop.Name == "Pawn" && strings.Contains(tower.Type, "King") && isGuardTowerDestroyed(enemy) {
 		damage *= 2
+	}
+	// Queen: Heal the friendly tower with lowest HP (that is still alive)
+	if troop.Name == "Queen" {
+		minHP := math.MaxInt32
+		var target *data.Tower
+		for i := range enemy.Towers {
+			if enemy.Towers[i].HP > 0 && enemy.Towers[i].HP < minHP {
+				minHP = enemy.Towers[i].HP
+				target = &enemy.Towers[i]
+			}
+		}
+		if target != nil {
+			target.HP += 300
+			// Optional: cap HP to max scaled HP
+			maxHP := GetTowerMaxHPScaled(target, enemy.Level)
+			if target.HP > maxHP {
+				target.HP = maxHP
+			}
+		}
+		return 0 // Queen does not deal damage, only heals
 	}
 
 	tower.HP -= damage
@@ -48,7 +68,7 @@ func AttackTower(troop *data.Troop, tower *data.Tower, playerID int, enemy *data
 }
 
 // 📐 Get max HP of tower scaled by level
-func getTowerMaxHPScaled(t *data.Tower, level int) int {
+func GetTowerMaxHPScaled(t *data.Tower, level int) int {
 	base := 1000
 	if t.Type == "King Tower" {
 		base = 2000

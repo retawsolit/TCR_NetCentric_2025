@@ -2,7 +2,7 @@
   {
     "Username": "player123",
     "Password": "password123",
-    "EXP": 10,
+    "EXP": 0,
     "Level": 1,
     "Towers": [
       {
@@ -91,7 +91,7 @@
   {
     "Username": "player456",
     "Password": "password456",
-    "EXP": 15,
+    "EXP": 0,
     "Level": 1,
     "Towers": [
       {

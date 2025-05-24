@@ -2,6 +2,7 @@ package data
 
 import (
 	"encoding/json"
+	"math/rand/v2"
 	"os"
 )
 
@@ -39,4 +40,16 @@ func LoadPlayer(path string) (*Player, error) {
 		return nil, err
 	}
 	return &player, nil
+}
+
+func PickRandomTroops(all []Troop, count int) []Troop {
+	shuffled := make([]Troop, len(all))
+	copy(shuffled, all)
+	rand.Shuffle(len(shuffled), func(i, j int) {
+		shuffled[i], shuffled[j] = shuffled[j], shuffled[i]
+	})
+	if count > len(shuffled) {
+		count = len(shuffled)
+	}
+	return shuffled[:count]
 }
