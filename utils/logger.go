@@ -36,7 +36,7 @@ func SavePlayersToJSON(players []data.Player) {
 		return
 	}
 
-	err = os.WriteFile("data/players.json", dataBytes, 0644)
+	err = os.WriteFile("../data/players.json", dataBytes, 0644)
 	if err != nil {
 		fmt.Println("❌ Failed to write players.json:", err)
 	} else {

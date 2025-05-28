@@ -60,7 +60,7 @@ func handleLogin(conn net.Conn, id int, wg *sync.WaitGroup) {
 	password, _ := reader.ReadString('\n')
 	password = strings.TrimSpace(password)
 
-	dataBytes, err := os.ReadFile("data/players.json")
+	dataBytes, err := os.ReadFile("../data/players.json")
 	if err != nil {
 		conn.Write([]byte("Server error loading data\n"))
 		return
@@ -73,7 +73,7 @@ func handleLogin(conn net.Conn, id int, wg *sync.WaitGroup) {
 	}
 
 	// ✅ Load danh sách tổng troop
-	allTroops, err := data.LoadTroops("data/troops.json")
+	allTroops, err := data.LoadTroops("../data/troops.json")
 	if err != nil {
 		conn.Write([]byte("Error loading troop data\n"))
 		return

@@ -7,17 +7,17 @@ import (
 )
 
 func main() {
-	troops, err := data.LoadTroops("data/troops.json")
+	troops, err := data.LoadTroops("../data/troops.json")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	towers, err := data.LoadTowers("data/towers.json")
+	towers, err := data.LoadTowers("../data/towers.json")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	player, err := data.LoadPlayer("data/players.json")
+	player, err := data.LoadPlayer("../data/players.json")
 	if err != nil {
 		log.Fatal(err)
 	}
