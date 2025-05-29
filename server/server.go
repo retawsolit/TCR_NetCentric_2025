@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
 	"sync"
 	"sync/atomic"
 	"tcr/data"
@@ -28,6 +29,7 @@ func main() {
 	}
 	fmt.Println("🟢 Server is listening on port 8080...")
 
+	var loginSuccess [2]bool
 	var wg sync.WaitGroup
 	wg.Add(2)
 
@@ -38,10 +40,27 @@ func main() {
 			continue
 		}
 		playerConns[i] = conn
-		go handleLogin(conn, i, &wg)
+		go func(conn net.Conn, id int) {
+			if handleLogin(conn, id, &wg) {
+				loginSuccess[id] = true
+			}
+		}(conn, i)
 	}
 
 	wg.Wait()
+
+	// ✅ Check cả 2 player login thành công
+	if !loginSuccess[0] || !loginSuccess[1] {
+		fmt.Println("❌ Not all players logged in successfully. Exiting.")
+		for _, conn := range playerConns {
+			if conn != nil {
+				conn.Write([]byte("❌ Game cannot start because one or both players failed to log in.\n"))
+				conn.Close()
+			}
+		}
+		return
+	}
+
 	fmt.Println("✅ Both players connected. Starting the game...\n")
 	go handleGame(0)
 	go handleGame(1)
@@ -49,7 +68,11 @@ func main() {
 	select {}
 }
 
-func handleLogin(conn net.Conn, id int, wg *sync.WaitGroup) {
+// ----------------------------------------------------------------------------
+// LOGIN HANDLER – returns true on success, false on failure
+// ----------------------------------------------------------------------------
+
+func handleLogin(conn net.Conn, id int, wg *sync.WaitGroup) bool {
 	defer wg.Done()
 	reader := bufio.NewReader(conn)
 	conn.Write([]byte(fmt.Sprintf("Welcome Player %d! Please enter your username:\n", id+1)))
@@ -63,28 +86,28 @@ func handleLogin(conn net.Conn, id int, wg *sync.WaitGroup) {
 	dataBytes, err := os.ReadFile("../data/players.json")
 	if err != nil {
 		conn.Write([]byte("Server error loading data\n"))
-		return
+		return false
 	}
 
 	var all []data.Player
 	if err := json.Unmarshal(dataBytes, &all); err != nil {
 		conn.Write([]byte("Error parsing player data\n"))
-		return
+		return false
 	}
 
-	// ✅ Load danh sách tổng troop
+	// ✅ Load tổng danh sách troop
 	allTroops, err := data.LoadTroops("../data/troops.json")
 	if err != nil {
 		conn.Write([]byte("Error loading troop data\n"))
-		return
+		return false
 	}
 
 	for _, p := range all {
 		if p.Username == username && p.Password == password {
-			// ✅ Random chọn 3 troop từ danh sách tổng
+			// Random chọn 3 troops
 			p.Troops = data.PickRandomTroops(allTroops, 3)
 
-			// Tăng lại HP tương ứng level
+			// Reset HP theo level
 			for i := range p.Towers {
 				baseHP := 1000
 				if p.Towers[i].Type == "King Tower" {
@@ -103,14 +126,14 @@ func handleLogin(conn net.Conn, id int, wg *sync.WaitGroup) {
 			startManaRegen(&players[id])
 			conn.Write([]byte("✅ Login success!\n"))
 			fmt.Printf("✅ Player %d (%s) logged in.\n", id+1, username)
-			return
+			return true
 		}
 	}
 
 	conn.Write([]byte("❌ Login failed.\n"))
 	fmt.Printf("❌ Login failed for %s\n", username)
+	return false
 }
-
 func handleGame(id int) {
 	conn := playerConns[id]
 	reader := bufio.NewReader(conn)

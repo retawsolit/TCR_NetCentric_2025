@@ -1,0 +1,13 @@
+🔥 Player 1 used Knight. Dealt 200 damage to Player 2's Guard Tower 1. HP left: 800
+🔥 Player 1 used Knight. Dealt 190 damage to Player 2's Guard Tower 1. HP left: 690
+⏰ Time's up!
+🔥 Player 2 used Bishop. Dealt 100 damage to Player 1's Guard Tower 1. HP left: 900
+🔥 Player 2 used Rook. Dealt 200 damage to Player 1's Guard Tower 1. HP left: 700
+🔥 Player 2 used Rook. Dealt 200 damage to Player 1's Guard Tower 1. HP left: 500
+🔥 Player 2 used Bishop. Dealt 100 damage to Player 1's Guard Tower 1. HP left: 400
+🔥 Player 2 used Bishop. Dealt 100 damage to Player 1's Guard Tower 1. HP left: 300
+🔥 Player 2 used Rook. Dealt 200 damage to Player 1's Guard Tower 1. HP left: 100
+🔥 Player 2 used Rook. Dealt 220 damage to Player 1's Guard Tower 1. HP left: 0
+🔥 Player 2 used Bishop. Dealt 120 damage to Player 1's Guard Tower 2. HP left: 880
+📊 Player 1 Total Damage: 390
+🧍 Knight used 2 time(s)
